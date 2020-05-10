@@ -2,10 +2,16 @@ import { setMountedInstance } from "./mounted-instance";
 import { createEventBus, getGlobalEventBus } from "./event-bus";
 import { ServiceInstance, BaseInstance } from "./service-instance";
 
+declare global {
+  interface Window {
+    _FCStore: Array<ServiceInstance>;
+  }
+}
+
 // Store instances of different services by id
 // It's in window object, so everyone can acess it
-if (!(window as any)._FCStore) {
-  (window as any)._FCStore = [] as Array<ServiceInstance>;
+if (!window._FCStore) {
+  window._FCStore = [];
 }
 
 /**
@@ -13,7 +19,7 @@ if (!(window as any)._FCStore) {
  * for easier access and typing
  */
 function getInstancesStore(): Array<ServiceInstance> {
-  return (window as any)._FCStore;
+  return window._FCStore;
 }
 
 /**

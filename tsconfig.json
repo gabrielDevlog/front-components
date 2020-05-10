@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "umd",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "outDir": "dist",
     "sourceMap": false,
-    "declaration": true
+    "declaration": true,
+    "lib": ["ES6", "DOM"]
   }
 }
