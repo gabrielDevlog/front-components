@@ -10,7 +10,7 @@ Or you can instantiate a service as controlled by another one: it has access to 
 
 ## Install
 
-TODO - wait for a name
+`npm install --save front-components`
 
 ## Registering a service
 
