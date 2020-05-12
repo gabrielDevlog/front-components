@@ -1,5 +1,11 @@
 import mitt from "mitt";
 
+declare global {
+  interface Window {
+    _FCEventBus: EventBus;
+  }
+}
+
 /**
  * Basic event emitter interface
  */
@@ -11,15 +17,15 @@ export interface EventBus {
 /**
  * Global event bus
  */
-if (!(window as any)._MFEventBus) {
-  (window as any)._MFEventBus = createEventBus();
+if (!window._FCEventBus) {
+  window._FCEventBus = createEventBus();
 }
 
 /**
  * Getter for global event bus
  */
 export function getGlobalEventBus(): EventBus {
-  return (window as any)._MFEventBus;
+  return window._FCEventBus;
 }
 
 /**

@@ -90,4 +90,9 @@ export interface ServiceInstance extends BaseInstance {
    * by calling this function, we can pass this instance from module B scope to module A scope
    */
   setMountedInstance: (instance: ServiceInstance) => void;
+
+  /**
+   * Reset runtime instance to null
+   */
+  resetMountedInstance: () => void;
 }

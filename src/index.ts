@@ -14,6 +14,12 @@ export const registerInstance = unmounted.registerInstance;
 export const instantiateAt = unmounted.instantiateAt;
 
 /**
+ * Unmount an instance from a given domNode
+ * Instance is ready to be reused
+ */
+export const unmountFrom = unmounted.unmountFom;
+
+/**
  * Emit an event in global or mounted instance event bus
  */
 export function emit(event: any) {

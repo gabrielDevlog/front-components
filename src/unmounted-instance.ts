@@ -1,6 +1,10 @@
-import { setMountedInstance } from "./mounted-instance";
+import { setMountedInstance, resetMountedInstance } from "./mounted-instance";
 import { createEventBus, getGlobalEventBus } from "./event-bus";
-import { ServiceInstance, BaseInstance } from "./service-instance";
+import {
+  ServiceInstance,
+  BaseInstance,
+  ServiceControls,
+} from "./service-instance";
 
 declare global {
   interface Window {
@@ -39,6 +43,29 @@ function findUnmountedInstanceByServiceId(serviceId: string) {
 }
 
 /**
+ * Find a mounted instance on a given DOM node
+ */
+function findMountedInstanceOnNode(serviceId: string, domElement: HTMLElement) {
+  const store = getInstancesStore();
+  return store.find(
+    (i) => i.serviceId === serviceId && i.domElement === domElement
+  );
+}
+
+/**
+ * Factory of control object
+ * for initialization
+ */
+function controlFactory(): ServiceControls {
+  return {
+    history: {
+      push: () => {}, // has to be overrided if controlled
+    },
+    events: getGlobalEventBus(), // has to be overrided if controlled
+  };
+}
+
+/**
  * Add a free instance into the store
  *
  * We may have the same service instance several time in the store
@@ -54,12 +81,7 @@ export function registerInstance(instance: BaseInstance) {
   const store = getInstancesStore();
 
   // controls
-  const controls = {
-    history: {
-      push: () => {},
-    },
-    events: getGlobalEventBus(), // has to be overrided if controlled
-  };
+  const controls = controlFactory();
 
   // Enrich base definition with setMountedDefinition
   store.push({
@@ -69,6 +91,7 @@ export function registerInstance(instance: BaseInstance) {
     // following function knows JS module of service A
     controls,
     setMountedInstance,
+    resetMountedInstance,
   });
 }
 
@@ -110,4 +133,23 @@ export async function instantiateAt(
   await instance.mount(domElement);
 
   return instance.controls;
+}
+
+export async function unmountFom(serviceId: string, domElement: HTMLElement) {
+  const instance = findMountedInstanceOnNode(serviceId, domElement);
+  if (!instance) {
+    throw new Error(
+      `No mounted instance for service ${serviceId} at ${domElement}`
+    );
+  }
+
+  await instance.unmount(domElement);
+
+  // Unregister instance from runtime scope
+  instance.resetMountedInstance();
+
+  // Reset instance to its unmounted state
+  instance.controls = controlFactory(); // TODO: remove all events listener ?
+  instance.domElement = undefined;
+  instance.isControlled = undefined;
 }

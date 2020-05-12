@@ -3,7 +3,7 @@ import { ServiceInstance } from "./service-instance";
 /**
  * The service instance once mounted on a dom element
  */
-let mountedInstance: ServiceInstance | undefined;
+let mountedInstance: ServiceInstance | null = null;
 
 /**
  * Register a module as the module providing current service
@@ -21,4 +21,11 @@ export function setMountedInstance(instance: ServiceInstance) {
  */
 export function getMountedInstance() {
   return mountedInstance;
+}
+
+/**
+ * Reset mounted instance
+ */
+export function resetMountedInstance() {
+  mountedInstance = null;
 }
